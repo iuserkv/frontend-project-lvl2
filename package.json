@@ -1,0 +1,35 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "1.0.0",
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "src/gendiff.js",
+  "type": "module",
+  "bin": {
+    "gendiff": "/bin/gendiff.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iuserkv/frontend-project-lvl2.git"
+  },
+  "keywords": [
+    "configuration files",
+    "shows difference"
+  ],
+  "author": "Kirsanov Viacheslav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iuserkv/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/iuserkv/frontend-project-lvl2#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
+  },
+  "dependencies": {
+    "commander": "^5.0.0"
+  }
+}
