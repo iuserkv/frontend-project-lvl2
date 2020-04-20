@@ -8,3 +8,9 @@
 ```sh
 $ make install
 ```
+
+## Пример использования
+```sh
+$ gendiff '../after.json' '../before.json'
+```
+[![asciicast](https://asciinema.org/a/s3PdFDeZxby3vCMFnP2LU9pOe.png)](https://asciinema.org/a/s3PdFDeZxby3vCMFnP2LU9pOe)

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import showDiff from '../src/showdiff.js';
+import { getDiff } from '../src/getdiff.js';
 
-showDiff(process.argv);
+getDiff(process.argv);
