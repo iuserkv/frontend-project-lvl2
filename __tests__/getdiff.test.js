@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { parseFromJSON, parseFromYAML, parseFromINI } from '../src/parsers.js';
 import genDiff, { genDiffOConfigs } from '../src/getdiff.js';
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -13,6 +14,31 @@ const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8'
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
 // Тесты
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
+
+const parsedData = {
+  host: 'hexlet.io',
+  timeout: 50,
+  proxy: '123.234.53.22',
+  follow: false,
+};
+
+// Парсинг JSON-файла.
+test('parseFromJSON', () => {
+  const data = readFile('before.json');
+  expect(parseFromJSON(data)).toEqual(parsedData);
+});
+
+// Парсинг YAML-файла.
+test('parseFromYAML', () => {
+  const data = readFile('before.yml');
+  expect(parseFromYAML(data)).toEqual(parsedData);
+});
+
+// Парсинг INI-файла.
+test('parseFromINI', () => {
+  const data = readFile('before.ini');
+  expect(parseFromINI(data)).toEqual(parsedData);
+});
 
 // Полное совпадение данных.
 test('genDiffOConfigs equal', () => {
@@ -44,8 +70,8 @@ test('genDiffOConfigs change', () => {
 
 // Полный тест с чтением данных из файлов.
 test('getDiff', () => {
-  const pathToFile1 = getFixturePath('after.json');
-  const pathToFile2 = getFixturePath('before.json');
-  const expectedDiff = readFile('diff_after_before_json.txt');
-  expect(genDiff('json', pathToFile1, pathToFile2)).toEqual(expectedDiff);
+  const dataOfFile1 = readFile('after.json');
+  const dataOfFile2 = readFile('before.json');
+  const diff = readFile('diff_after_before_json.txt');
+  expect(genDiff('json', dataOfFile1, dataOfFile2)).toEqual(diff);
 });

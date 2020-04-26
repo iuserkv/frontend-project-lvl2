@@ -1,10 +1,7 @@
 import command from 'commander';
-import fs from 'fs';
-import path from 'path';
 import _ from 'lodash';
-import yaml from 'js-yaml';
-import fileExist from './utils.js';
-import { parseFromJSON, parseFromYAML } from './parsers.js';
+import readFile from './utils.js';
+import { parseFromJSON, parseFromYAML, parseFromINI } from './parsers.js';
 
 // Генерирует список отличий двух объектов.
 const genDiffOConfigs = (config1, config2) => {
@@ -36,38 +33,27 @@ const genDiffOConfigs = (config1, config2) => {
   return result;
 };
 
-// Генерирует список отличий в файлах формата JSON.
-const genDiffJSON = (pathToFile1, pathToFile2) => {
-  const file1Data = fs.readFileSync(pathToFile1, 'utf-8');
-  const config1 = parseFromJSON(file1Data);
-
-  const file2Data = fs.readFileSync(pathToFile2, 'utf-8');
-  const config2 = parseFromJSON(file2Data);
-
-  return genDiffOConfigs(config1, config2);
-};
-
-// Генерирует список отличий в файлах формата YAML.
-const genDiffYAML = (pathToFile1, pathToFile2) => {
-  const file1Data = fs.readFileSync(pathToFile1, 'utf-8');
-  const config1YAML = yaml.safeLoad(file1Data);
-  const config1 = parseFromYAML(config1YAML);
-
-  const file2Data = fs.readFileSync(pathToFile2, 'utf-8');
-  const config2YAML = yaml.safeLoad(file2Data);
-  const config2 = parseFromYAML(config2YAML);
-
-  return genDiffOConfigs(config1, config2);
-};
-
 // Генерирует список отличий в файлах.
-const genDiff = (typeFiles, pathToFile1, pathToFile2) => {
+const genDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
   if (typeFiles === 'json') {
-    return genDiffJSON(pathToFile1, pathToFile2);
+    const config1 = parseFromJSON(dataOfFile1);
+    const config2 = parseFromJSON(dataOfFile2);
+
+    return genDiffOConfigs(config1, config2);
   }
 
   if (typeFiles === 'yaml') {
-    return genDiffYAML(pathToFile1, pathToFile2);
+    const config1 = parseFromYAML(dataOfFile1);
+    const config2 = parseFromYAML(dataOfFile2);
+
+    return genDiffOConfigs(config1, config2);
+  }
+
+  if (typeFiles === 'ini') {
+    const config1 = parseFromINI(dataOfFile1);
+    const config2 = parseFromINI(dataOfFile2);
+
+    return genDiffOConfigs(config1, config2);
   }
 
   return '';
@@ -75,21 +61,14 @@ const genDiff = (typeFiles, pathToFile1, pathToFile2) => {
 
 // Выводит на экран отличия в файлах.
 const showDiff = (typeFiles, pathToFile1, pathToFile2) => {
-  const absPathToFile1 = path.resolve(pathToFile1);
-  if (!fileExist(absPathToFile1)) {
-    console.log(`File ${absPathToFile1} is not exist!`);
-    return;
+  const dataOfFile1 = readFile(pathToFile1);
+  const dataOfFile2 = readFile(pathToFile2);
+
+  if (dataOfFile1 && dataOfFile2) {
+    console.log(genDiff(typeFiles, dataOfFile1, dataOfFile2));
   }
 
-  const absPathToFile2 = path.resolve(pathToFile2);
-  if (!fileExist(absPathToFile2)) {
-    console.log(`File ${absPathToFile2} is not exist!`);
-    return;
-  }
-
-  const diff = genDiff(typeFiles, pathToFile1, pathToFile2);
-
-  console.log(diff);
+  console.log('Failed to get data!');
 };
 
 // Принимает и обрабатывает параметры,

@@ -1,3 +1,4 @@
+import path from 'path';
 import fs from 'fs';
 
 // Проверяет существование файла.
@@ -13,4 +14,14 @@ const fileExist = (pathToFile) => {
   return true;
 };
 
-export default fileExist;
+// Читает и возвращает данные из фала.
+const readFile = (pathToFile) => {
+  const absPathToFile = path.resolve(pathToFile);
+  if (fileExist(absPathToFile)) {
+    return fs.readFileSync(pathToFile, 'utf-8');
+  }
+
+  return null;
+};
+
+export default readFile;
