@@ -15,4 +15,4 @@ $ make install
 ```sh
 $ gendiff '../after.json' '../before.json'
 ```
-[![asciicast](https://asciinema.org/a/s3PdFDeZxby3vCMFnP2LU9pOe.png)](https://asciinema.org/a/s3PdFDeZxby3vCMFnP2LU9pOe)
+[![asciicast](https://asciinema.org/a/JHMnWQm18SD78vAwMXARUM9CO.png)](https://asciinema.org/a/JHMnWQm18SD78vAwMXARUM9CO)

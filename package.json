@@ -2,6 +2,7 @@
   "name": "frontend-project-lvl2",
   "version": "1.0.0",
   "description": "Compares two configuration files and shows a difference.",
+  "type": "module",
   "main": "index.js",
   "bin": {
     "gendiff": "/bin/gendiff.js"
@@ -39,6 +40,7 @@
   },
   "dependencies": {
     "commander": "^5.0.0",
+    "js-yaml": "^3.13.1",
     "lodash": "^4.17.15"
   }
 }
