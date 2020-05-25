@@ -1,90 +1,70 @@
 import command from 'commander';
-import _ from 'lodash';
+// import _ from 'lodash';
 import readFile from './utils.js';
-import { parseFromJSON, parseFromYAML, parseFromINI } from './parsers.js';
+import { getParsedJSON, getParsedYAML, getParsedINI } from './parsers.js';
+import { getDiffTree, stylish } from './trees.js';
 
-// Генерирует список отличий двух объектов.
-const genDiffOConfigs = (config1, config2) => {
-  let result = '{\n';
+// Возвращает отформатированную строку отличий в файлах.
+const getDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
+  switch (typeFiles) {
+    case 'json': {
+      const config1 = getParsedJSON(dataOfFile1);
+      const config2 = getParsedJSON(dataOfFile2);
+      const diffTree = getDiffTree(config1, config2);
 
-  const keysOfCongig1 = Object.keys(config1);
-  keysOfCongig1.forEach((key) => {
-    if (_.has(config2, key)) {
-      if (config2[key] === config1[key]) {
-        result += `    ${key}: ${config1[key]}\n`;
-      } else {
-        result += `  + ${key}: ${config2[key]}\n`;
-        result += `  - ${key}: ${config1[key]}\n`;
-      }
-    } else {
-      result += `  - ${key}: ${config1[key]}\n`;
+      return diffTree;
     }
-  });
+    case 'yaml': {
+      const config1 = getParsedYAML(dataOfFile1);
+      const config2 = getParsedYAML(dataOfFile2);
+      const diffTree = getDiffTree(config1, config2);
 
-  const keysOfConfig2 = Object.keys(config2);
-  keysOfConfig2.forEach((key) => {
-    if (!_.has(config1, key)) {
-      result += `  + ${key}: ${config2[key]}\n`;
+      return diffTree;
     }
-  });
+    case 'ini': {
+      const config1 = getParsedINI(dataOfFile1);
+      const config2 = getParsedINI(dataOfFile2);
+      const diffTree = getDiffTree(config1, config2);
 
-  result += '}';
-
-  return result;
-};
-
-// Генерирует список отличий в файлах.
-const genDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
-  if (typeFiles === 'json') {
-    const config1 = parseFromJSON(dataOfFile1);
-    const config2 = parseFromJSON(dataOfFile2);
-
-    return genDiffOConfigs(config1, config2);
+      return diffTree;
+    }
+    default:
+      return null;
   }
-
-  if (typeFiles === 'yaml') {
-    const config1 = parseFromYAML(dataOfFile1);
-    const config2 = parseFromYAML(dataOfFile2);
-
-    return genDiffOConfigs(config1, config2);
-  }
-
-  if (typeFiles === 'ini') {
-    const config1 = parseFromINI(dataOfFile1);
-    const config2 = parseFromINI(dataOfFile2);
-
-    return genDiffOConfigs(config1, config2);
-  }
-
-  return '';
 };
 
 // Выводит на экран отличия в файлах.
-const showDiff = (typeFiles, pathToFile1, pathToFile2) => {
+const showDiff = (typeFiles, formatter, pathToFile1, pathToFile2) => {
   const dataOfFile1 = readFile(pathToFile1);
   const dataOfFile2 = readFile(pathToFile2);
 
   if (dataOfFile1 && dataOfFile2) {
-    console.log(genDiff(typeFiles, dataOfFile1, dataOfFile2));
+    const diffTree = getDiff(typeFiles, dataOfFile1, dataOfFile2);
+    if (formatter === 'stylish') {
+      const diffString = stylish(diffTree);
+      console.log(diffString);
+    } else {
+      console.log('');
+    }
+  } else {
+    console.log('Failed to get data!');
   }
-
-  console.log('Failed to get data!');
 };
 
-// Принимает и обрабатывает параметры,
-// переданные утилите при запуске.
-const getDiff = (params) => {
+// Точка входа.
+const genDiff = (params) => {
   command
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
     .helpOption('-h, --help', 'output usage information')
     .option('-f, --format <type>', 'output format')
+    .option('-s, --style <style>', 'output information formatting style', 'stylish')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      showDiff(command.format, firstConfig, secondConfig);
+      showDiff(command.format, command.style, firstConfig, secondConfig);
     })
     .parse(params);
 };
 
-export { genDiffOConfigs, getDiff };
+export { getDiff };
 export default genDiff;

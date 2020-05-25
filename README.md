@@ -11,18 +11,10 @@
 $ make install
 ```
 
-## Пример использования
+## Примеры использования
 ```sh
-$ gendiff -f json 'after.json' 'before.json'
+$ gendiff -f json 'before.json' 'after.json'
+$ gendiff -f yaml 'before.yml' 'after.yml'
+$ gendiff -f ini 'before.ini' 'after.ini'
 ```
-[![asciicast](https://asciinema.org/a/0ZP2YkEQJDw5xU1K18LxFWJFF.png)](https://asciinema.org/a/0ZP2YkEQJDw5xU1K18LxFWJFF)
-
-```sh
-$ gendiff -f yaml 'after.yml' 'before.yml'
-```
-[![asciicast](https://asciinema.org/a/4Pge1qLgzbXcOaF1jhkkEaQAA.png)](https://asciinema.org/a/4Pge1qLgzbXcOaF1jhkkEaQAA)
-
-```sh
-$ gendiff -f ini 'after.ini' 'before.ini'
-```
-[![asciicast](https://asciinema.org/a/72ihIOoEjE2CLkDiXC49AJqvX.png)](https://asciinema.org/a/72ihIOoEjE2CLkDiXC49AJqvX)
+[![asciicast](https://asciinema.org/a/0MqFgTr1maZMJthxZG7YcvtMW.png)](https://asciinema.org/a/0MqFgTr1maZMJthxZG7YcvtMW)

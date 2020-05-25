@@ -1,43 +1,43 @@
+import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-// Парсит JSON файл.
-const parseFromJSON = (data) => JSON.parse(data);
+// Парсер JSON-файлов.
+const getParsedJSON = (data) => JSON.parse(data);
 
-// Парсит YAML файл.
-const parseFromYAML = (data) => {
-  const parsedData = yaml.safeLoad(data);
+// Парсер YAML-файлов.
+const getParsedYAML = (data) => {
+  const preparedData = yaml.safeLoad(data);
 
-  const preparedData = parsedData.reduce((acc, item) => {
+  if (!_.isArray(preparedData)) {
+    return preparedData;
+  }
+
+  return preparedData.reduce((acc, item) => {
     const [key, value] = Object.entries(item)[0];
     acc[key] = value;
+
     return acc;
   }, {});
-
-  return preparedData;
 };
 
-// Парсит INI файл.
-const parseFromINI = (data) => {
-  const parsedData = ini.parse(data);
+// Парсер INI-файл.
+const getParsedINI = (data) => {
+  const preparedData = Object.entries(ini.decode(data));
 
-  const propeties = Object.entries(parsedData);
-
-  const preparedData = propeties.reduce((acc, property) => {
-    const [key, value] = [...property];
-    // Если value имеет тип "строка" и
-    // его можно преобразовать в число,
-    // преобразуем
+  return preparedData.reduce((acc, item) => {
+    const [key, value] = [...item];
+    // Убираем кавычки для чисел.
     if (typeof value === 'string') {
       acc[key] = Number.isNaN(+value) ? value : +value;
-    } else {
-      acc[key] = value;
+
+      return acc;
     }
+
+    acc[key] = value;
 
     return acc;
   }, {});
-
-  return preparedData;
 };
 
-export { parseFromJSON, parseFromYAML, parseFromINI };
+export { getParsedJSON, getParsedYAML, getParsedINI };

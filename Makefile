@@ -9,3 +9,6 @@ lint:
 
 test:
 	npx jest
+
+run:
+	node src/tree.js
