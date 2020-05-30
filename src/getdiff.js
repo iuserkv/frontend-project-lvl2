@@ -1,27 +1,28 @@
 import command from 'commander';
-// import _ from 'lodash';
+import path from 'path';
 import readFile from './utils.js';
 import { getParsedJSON, getParsedYAML, getParsedINI } from './parsers.js';
-import { getDiffTree, stylish } from './trees.js';
+import getDiffTree from './trees.js';
+import getFormatter from '../formatters/index.js';
 
 // Возвращает отформатированную строку отличий в файлах.
 const getDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
   switch (typeFiles) {
-    case 'json': {
+    case '.json': {
       const config1 = getParsedJSON(dataOfFile1);
       const config2 = getParsedJSON(dataOfFile2);
       const diffTree = getDiffTree(config1, config2);
 
       return diffTree;
     }
-    case 'yaml': {
+    case '.yml': {
       const config1 = getParsedYAML(dataOfFile1);
       const config2 = getParsedYAML(dataOfFile2);
       const diffTree = getDiffTree(config1, config2);
 
       return diffTree;
     }
-    case 'ini': {
+    case '.ini': {
       const config1 = getParsedINI(dataOfFile1);
       const config2 = getParsedINI(dataOfFile2);
       const diffTree = getDiffTree(config1, config2);
@@ -34,21 +35,35 @@ const getDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
 };
 
 // Выводит на экран отличия в файлах.
-const showDiff = (typeFiles, formatter, pathToFile1, pathToFile2) => {
+const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
+  const typeFile1 = path.extname(pathToFile1);
+  const typeFile2 = path.extname(pathToFile2);
+
+  if (typeFile1 !== typeFile2) {
+    console.log('The type of files to compare must be the same!');
+    return;
+  }
+
   const dataOfFile1 = readFile(pathToFile1);
   const dataOfFile2 = readFile(pathToFile2);
 
-  if (dataOfFile1 && dataOfFile2) {
-    const diffTree = getDiff(typeFiles, dataOfFile1, dataOfFile2);
-    if (formatter === 'stylish') {
-      const diffString = stylish(diffTree);
-      console.log(diffString);
-    } else {
-      console.log('');
-    }
-  } else {
+  if (!dataOfFile1 || !dataOfFile2) {
     console.log('Failed to get data!');
+    return;
   }
+
+  const diffTree = getDiff(typeFile1, dataOfFile1, dataOfFile2);
+  if (diffTree === null) {
+    console.log('The difference tree was not received!');
+    return;
+  }
+
+  const formatter = getFormatter(typeFormat);
+  if (formatter === null) {
+    console.log('Failed to get the formatter!');
+    return;
+  }
+  console.log(formatter(diffTree));
 };
 
 // Точка входа.
@@ -57,11 +72,10 @@ const genDiff = (params) => {
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
     .helpOption('-h, --help', 'output usage information')
-    .option('-f, --format <type>', 'output format')
-    .option('-s, --style <style>', 'output information formatting style', 'stylish')
+    .option('-f, --format [format]', 'output format [format]', 'stylish')
     .arguments('<firstConfig> <secondConfig>')
     .action((firstConfig, secondConfig) => {
-      showDiff(command.format, command.style, firstConfig, secondConfig);
+      showDiff(command.format, firstConfig, secondConfig);
     })
     .parse(params);
 };

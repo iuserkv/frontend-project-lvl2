@@ -13,8 +13,8 @@ $ make install
 
 ## Примеры использования
 ```sh
-$ gendiff -f json 'before.json' 'after.json'
-$ gendiff -f yaml 'before.yml' 'after.yml'
-$ gendiff -f ini 'before.ini' 'after.ini'
+$ gendiff 'before.json' 'after.json'
+$ gendiff -f stylish 'before.yml' 'after.yml'
+$ gendiff -f plain 'before.ini' 'after.ini'
 ```
-[![asciicast](https://asciinema.org/a/0MqFgTr1maZMJthxZG7YcvtMW.png)](https://asciinema.org/a/0MqFgTr1maZMJthxZG7YcvtMW)
+[![asciicast](https://asciinema.org/a/6a6PrDLNuhxQBSutxupsCXpjc.png)](https://asciinema.org/a/6a6PrDLNuhxQBSutxupsCXpjc)
