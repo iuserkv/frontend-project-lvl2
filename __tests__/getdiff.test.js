@@ -4,13 +4,14 @@ import { getParsedJSON, getParsedYAML, getParsedINI } from '../src/parsers.js';
 import getDiffTree from '../src/trees.js';
 import getStylishFormatedDiff from '../formatters/stylish.js';
 import getPlainFormatedDiff from '../formatters/plain.js';
+import getJSONFormatedDiff from '../formatters/json.js';
 import { getDiff } from '../src/getdiff.js';
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
 // Вспомогательные функции
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-const getFixturePath = (filename) => path.join(__dirname, '..', 'fixtures', filename);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
@@ -172,5 +173,16 @@ test('getDiff INI tree plain', () => {
   const requiredString = readFile('diff_plain.txt');
   const diffTree = getDiff('.ini', dataOfFile1, dataOfFile2);
   const diffString = getPlainFormatedDiff(diffTree);
+  expect(diffString).toEqual(requiredString);
+});
+
+// Полный тест со сложной структорой с чтением данных из файлов
+// с форматированием JSON.
+test('getDiff YAML tree json', () => {
+  const dataOfFile1 = readFile('before_tree.json');
+  const dataOfFile2 = readFile('after_tree.json');
+  const requiredString = readFile('diff_json.txt');
+  const diffTree = getDiff('.json', dataOfFile1, dataOfFile2);
+  const diffString = getJSONFormatedDiff(diffTree);
   expect(diffString).toEqual(requiredString);
 });
