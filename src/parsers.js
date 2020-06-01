@@ -21,7 +21,7 @@ const getParsedYAML = (data) => {
   }, {});
 };
 
-// Парсер INI-файл.
+// Парсер INI-файлов.
 const getParsedINI = (data) => {
   const preparedData = Object.entries(ini.decode(data));
 
