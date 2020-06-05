@@ -13,7 +13,8 @@ jobs:
       run: make install
     - name: Run linter
       run: make lint
-    - name: Run tests
+    - name: Run test
+      uses: paambaati/codeclimate-action@v2.6.0
       env:
         CC_TEST_REPORTER_ID: 7bb7efa4bbafdee0831674bb54c9c26f0a13fd4f914ddeae670300970df402f8
       with:
