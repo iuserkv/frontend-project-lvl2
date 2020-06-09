@@ -3,10 +3,11 @@ import path from 'path';
 import readFile from './utils.js';
 import { getParsedJSON, getParsedYAML, getParsedINI } from './parsers.js';
 import getDiffTree from './trees.js';
-import getFormatter from '../formatters/index.js';
+import getFormatter from './formatters/index.js';
 
-// Возвращает отформатированную строку отличий в файлах.
-const getDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
+// Возвращает дерево различий в конфигурационных файлах
+// указанного типа.
+const getDiffTreeConfigs = (typeFiles, dataOfFile1, dataOfFile2) => {
   switch (typeFiles) {
     case '.json': {
       const config1 = getParsedJSON(dataOfFile1);
@@ -34,6 +35,9 @@ const getDiff = (typeFiles, dataOfFile1, dataOfFile2) => {
   }
 };
 
+// Возвращает дерево различий diffTree в виде отформатированной строки.
+const genDiff = (diffTree, formatter) => formatter(diffTree);
+
 // Выводит на экран отличия в файлах.
 const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
   const typeFile1 = path.extname(pathToFile1);
@@ -52,7 +56,7 @@ const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
     return;
   }
 
-  const diffTree = getDiff(typeFile1, dataOfFile1, dataOfFile2);
+  const diffTree = getDiffTreeConfigs(typeFile1, dataOfFile1, dataOfFile2);
   if (diffTree === null) {
     console.log('The difference tree was not received!');
     return;
@@ -63,11 +67,14 @@ const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
     console.log('Failed to get the formatter!');
     return;
   }
-  console.log(formatter(diffTree));
+
+  const formattedDiffString = genDiff(diffTree, formatter);
+  console.log(formattedDiffString);
 };
 
-// Точка входа.
-const genDiff = (params) => {
+// Обработавыает параметры командной строки
+// и выполняет соответствующие действия.
+const processCommands = (params) => {
   command
     .version('1.0.0')
     .description('Compares two configuration files and shows a difference.')
@@ -80,5 +87,4 @@ const genDiff = (params) => {
     .parse(params);
 };
 
-export { getDiff };
-export default genDiff;
+export { genDiff, getDiffTreeConfigs, processCommands };

@@ -25,7 +25,7 @@ const getParsedYAML = (data) => {
 const getParsedINI = (data) => {
   const preparedData = Object.entries(ini.decode(data));
 
-  return preparedData.reduce((acc, item) => {
+  const parseINI = (iniData) => iniData.reduce((acc, item) => {
     const [key, value] = [...item];
     // Убираем кавычки для чисел.
     if (typeof value === 'string') {
@@ -34,10 +34,21 @@ const getParsedINI = (data) => {
       return acc;
     }
 
+    // Проходим по всем комплесным значениям.
+    if ((_.isObject(value)) && (!_.isArray(value))) {
+      acc[key] = parseINI(Object.entries(value));
+
+      return acc;
+    }
+
     acc[key] = value;
 
     return acc;
   }, {});
+
+  const parsedData = parseINI(preparedData);
+
+  return parsedData;
 };
 
 export { getParsedJSON, getParsedYAML, getParsedINI };

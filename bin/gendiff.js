@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import genDiff from '../src/getdiff.js';
+import processCommands from '../index.js';
 
-genDiff(process.argv);
+processCommands(process.argv);

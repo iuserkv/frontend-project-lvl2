@@ -1,3 +1,3 @@
-import genDiff from './src/getdiff.js';
+import { processCommands } from './src/diffconfigs.js';
 
-export default genDiff;
+export default processCommands;

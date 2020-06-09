@@ -110,7 +110,7 @@ const getDiffTree = (oldTree, newTree) => {
             isMatch = true;
 
             if (_.isEqual(beforeNodeValue, afterNodeValue)) {
-              const diffNode = makeNode(beforeNodeName, beforeNodeValue, 'unchanged');
+              const diffNode = convertNode(beforeNode, 'unchanged');
               diffTree.push(diffNode);
             } else if (!_.isObject(beforeNodeValue) || !_.isObject(afterNodeValue)) {
               const diffNode = makeChangedNode(beforeNodeName, beforeNodeValue, afterNodeValue);
