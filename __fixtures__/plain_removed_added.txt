@@ -1,0 +1,3 @@
+Property 'common.setting2' was deleted
+Property 'common.setting3' was added with value: true
+Property 'common.setting6' was added with value: [complex value]

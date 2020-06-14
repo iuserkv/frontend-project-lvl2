@@ -57,340 +57,10 @@ test('getParsedINI', () => {
 // Тестирование построения "внутреннего" дерева различий
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
 
-test('getDiffTree equal', () => {
-  const before = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 200,
-      setting3: true,
-      setting6: {
-        key: 'value',
-      },
-    },
-  };
-
-  const after = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 200,
-      setting3: true,
-      setting6: {
-        key: 'value',
-      },
-    },
-  };
-
-  const diff = [
-    {
-      name: 'common',
-      type: 'unchanged',
-      value: [
-        {
-          name: 'setting1',
-          type: 'unchanged',
-          value: 'Value 1',
-        },
-        {
-          name: 'setting2',
-          type: 'unchanged',
-          value: 200,
-        },
-        {
-          name: 'setting3',
-          type: 'unchanged',
-          value: true,
-        },
-        {
-          name: 'setting6',
-          type: 'unchanged',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  const diffTree = getDiffTree(before, after);
-  expect(diffTree).toEqual(diff);
-});
-
-test('getDiffTree add', () => {
-  const before = {
-    common: {
-      setting1: 'Value 1',
-      setting4: {
-        key: 'value',
-      },
-    },
-  };
-
-  const after = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 200,
-      setting3: true,
-      setting4: {
-        key: 'value',
-      },
-      setting5: {
-        key: 'value',
-        ops: 'vops',
-      },
-    },
-  };
-
-  const diff = [
-    {
-      name: 'common',
-      type: 'changed',
-      value: [
-        {
-          name: 'setting1',
-          type: 'unchanged',
-          value: 'Value 1',
-        },
-        {
-          name: 'setting4',
-          type: 'unchanged',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-          ],
-        },
-        {
-          name: 'setting2',
-          type: 'added',
-          value: 200,
-        },
-        {
-          name: 'setting3',
-          type: 'added',
-          value: true,
-        },
-        {
-          name: 'setting5',
-          type: 'added',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-            {
-              name: 'ops',
-              type: 'unchanged',
-              value: 'vops',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  const diffTree = getDiffTree(before, after);
-  expect(diffTree).toEqual(diff);
-});
-
-test('getDiffTree delete', () => {
-  const before = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 200,
-      setting3: true,
-      setting4: {
-        key: 'value',
-      },
-      setting5: {
-        key: 'value',
-        ops: 'vops',
-      },
-    },
-  };
-
-  const after = {
-    common: {
-      setting1: 'Value 1',
-      setting4: {
-        key: 'value',
-      },
-    },
-  };
-
-  const diff = [
-    {
-      name: 'common',
-      type: 'changed',
-      value: [
-        {
-          name: 'setting1',
-          type: 'unchanged',
-          value: 'Value 1',
-        },
-        {
-          name: 'setting4',
-          type: 'unchanged',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-          ],
-        },
-        {
-          name: 'setting2',
-          type: 'removed',
-          value: 200,
-        },
-        {
-          name: 'setting3',
-          type: 'removed',
-          value: true,
-        },
-        {
-          name: 'setting5',
-          type: 'removed',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-            {
-              name: 'ops',
-              type: 'unchanged',
-              value: 'vops',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  const diffTree = getDiffTree(before, after);
-  expect(diffTree).toEqual(diff);
-});
-
-test('getDiffTree change', () => {
-  const before = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 200,
-      setting3: true,
-      setting4: {
-        key: 'value',
-      },
-      setting5: {
-        key: 'value',
-        ops: 'vops',
-      },
-    },
-  };
-
-  const after = {
-    common: {
-      setting1: 'Value 1',
-      setting2: 100,
-      setting3: false,
-      setting4: {
-        key: 'value 4',
-      },
-      setting5: {
-        key: 'value',
-        ops: 'opsv',
-      },
-    },
-  };
-
-  const diff = [
-    {
-      name: 'common',
-      type: 'changed',
-      value: [
-        {
-          name: 'setting1',
-          type: 'unchanged',
-          value: 'Value 1',
-        },
-        {
-          name: 'setting2',
-          type: 'changed',
-          beforeValue: 200,
-          afterValue: 100,
-        },
-        {
-          name: 'setting3',
-          type: 'changed',
-          beforeValue: true,
-          afterValue: false,
-        },
-        {
-          name: 'setting4',
-          type: 'changed',
-          value: [
-            {
-              name: 'key',
-              type: 'changed',
-              beforeValue: 'value',
-              afterValue: 'value 4',
-            },
-          ],
-        },
-        {
-          name: 'setting5',
-          type: 'changed',
-          value: [
-            {
-              name: 'key',
-              type: 'unchanged',
-              value: 'value',
-            },
-            {
-              name: 'ops',
-              type: 'changed',
-              beforeValue: 'vops',
-              afterValue: 'opsv',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  const diffTree = getDiffTree(before, after);
-  expect(diffTree).toEqual(diff);
-});
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-// Тестирование построения "внутреннего" дерева различий
-// с использованием test.each
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-// Данные не изменились.
-const before1 = {
+const tree = {
   common: {
     setting1: 'Value 1',
     setting2: 200,
-    setting3: true,
-    setting6: {
-      key: 'value',
-    },
-  },
-};
-
-const after1 = {
-  common: {
-    setting1: 'Value 1',
-    setting2: 200,
-    setting3: true,
     setting6: {
       key: 'value',
     },
@@ -413,11 +83,6 @@ const diffEqual = [
         value: 200,
       },
       {
-        name: 'setting3',
-        type: 'unchanged',
-        value: true,
-      },
-      {
         name: 'setting6',
         type: 'unchanged',
         value: [
@@ -432,24 +97,18 @@ const diffEqual = [
   },
 ];
 
-// Данные были добавлены.
-const before2 = {
+const treeBeforeAddAndRemove = {
   common: {
-    setting1: 'Value 1',
+    setting2: 200,
     setting4: {
       key: 'value',
     },
   },
 };
 
-const after2 = {
+const treeAfterAddAndRemove = {
   common: {
     setting1: 'Value 1',
-    setting2: 200,
-    setting3: true,
-    setting4: {
-      key: 'value',
-    },
     setting5: {
       key: 'value',
       ops: 'vops',
@@ -457,19 +116,19 @@ const after2 = {
   },
 };
 
-const diffAdded = [
+const diffAddedAndRemoved = [
   {
     name: 'common',
     type: 'changed',
     value: [
       {
-        name: 'setting1',
-        type: 'unchanged',
-        value: 'Value 1',
+        name: 'setting2',
+        type: 'removed',
+        value: 200,
       },
       {
         name: 'setting4',
-        type: 'unchanged',
+        type: 'removed',
         value: [
           {
             name: 'key',
@@ -479,14 +138,9 @@ const diffAdded = [
         ],
       },
       {
-        name: 'setting2',
+        name: 'setting1',
         type: 'added',
-        value: 200,
-      },
-      {
-        name: 'setting3',
-        type: 'added',
-        value: true,
+        value: 'Value 1',
       },
       {
         name: 'setting5',
@@ -508,15 +162,10 @@ const diffAdded = [
   },
 ];
 
-// Данные были удалены.
-const before3 = {
+const treeBeforeChange = {
   common: {
-    setting1: 'Value 1',
     setting2: 200,
     setting3: true,
-    setting4: {
-      key: 'value',
-    },
     setting5: {
       key: 'value',
       ops: 'vops',
@@ -524,90 +173,10 @@ const before3 = {
   },
 };
 
-const after3 = {
+const treeAfterChange = {
   common: {
-    setting1: 'Value 1',
-    setting4: {
-      key: 'value',
-    },
-  },
-};
-
-const diffRemoved = [
-  {
-    name: 'common',
-    type: 'changed',
-    value: [
-      {
-        name: 'setting1',
-        type: 'unchanged',
-        value: 'Value 1',
-      },
-      {
-        name: 'setting4',
-        type: 'unchanged',
-        value: [
-          {
-            name: 'key',
-            type: 'unchanged',
-            value: 'value',
-          },
-        ],
-      },
-      {
-        name: 'setting2',
-        type: 'removed',
-        value: 200,
-      },
-      {
-        name: 'setting3',
-        type: 'removed',
-        value: true,
-      },
-      {
-        name: 'setting5',
-        type: 'removed',
-        value: [
-          {
-            name: 'key',
-            type: 'unchanged',
-            value: 'value',
-          },
-          {
-            name: 'ops',
-            type: 'unchanged',
-            value: 'vops',
-          },
-        ],
-      },
-    ],
-  },
-];
-
-// Данные были изменены.
-const before4 = {
-  common: {
-    setting1: 'Value 1',
-    setting2: 200,
-    setting3: true,
-    setting4: {
-      key: 'value',
-    },
-    setting5: {
-      key: 'value',
-      ops: 'vops',
-    },
-  },
-};
-
-const after4 = {
-  common: {
-    setting1: 'Value 1',
     setting2: 100,
     setting3: false,
-    setting4: {
-      key: 'value 4',
-    },
     setting5: {
       key: 'value',
       ops: 'opsv',
@@ -621,11 +190,6 @@ const diffChanged = [
     type: 'changed',
     value: [
       {
-        name: 'setting1',
-        type: 'unchanged',
-        value: 'Value 1',
-      },
-      {
         name: 'setting2',
         type: 'changed',
         beforeValue: 200,
@@ -636,18 +200,6 @@ const diffChanged = [
         type: 'changed',
         beforeValue: true,
         afterValue: false,
-      },
-      {
-        name: 'setting4',
-        type: 'changed',
-        value: [
-          {
-            name: 'key',
-            type: 'changed',
-            beforeValue: 'value',
-            afterValue: 'value 4',
-          },
-        ],
       },
       {
         name: 'setting5',
@@ -671,16 +223,15 @@ const diffChanged = [
 ];
 
 test.each([
-  [before1, after1, diffEqual],
-  [before2, after2, diffAdded],
-  [before3, after3, diffRemoved],
-  [before4, after4, diffChanged],
-])('Build diffTree %#', (before, after, diffTree) => {
-  expect(getDiffTree(before, after)).toEqual(diffTree);
+  ['equal', tree, tree, diffEqual],
+  ['added & removed', treeBeforeAddAndRemove, treeAfterAddAndRemove, diffAddedAndRemoved],
+  ['changed', treeBeforeChange, treeAfterChange, diffChanged],
+])('getDiffTree %s', (title, beforeTree, afterTree, diffTree) => {
+  expect(diffTree).toEqual(getDiffTree(beforeTree, afterTree));
 });
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
-// Тестирование форматера 'stylish'
+// Тестирование форматеров
 // ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 const diffTreeUnchanged = [
@@ -718,7 +269,7 @@ const diffTreeUnchanged = [
   },
 ];
 
-const diffTreeRemAndAdd = [
+const diffTreeRemovedAndAdded = [
   {
     name: 'common',
     type: 'changed',
@@ -760,19 +311,14 @@ const diffTreeChanged = [
     value: [
       {
         name: 'setting1',
-        type: 'added',
+        type: 'unchanged',
         value: 'Value 1',
       },
       {
         name: 'setting2',
-        type: 'removed',
-        value: '200',
-      },
-      {
-        name: 'setting3',
         type: 'changed',
-        beforeValue: 'true',
-        afterValue: 'false',
+        beforeValue: 200,
+        afterValue: 100,
       },
       {
         name: 'setting5',
@@ -808,235 +354,35 @@ const diffTreeChanged = [
   },
 ];
 
-test('genDiff stylish unchanged', () => {
-  const diffString = `{
-    common: {
-        setting1: Value 1
-        setting2: 200
-        setting3: true
-        setting6: {
-            key: value
-        }
-    }
-}`;
-  const formatter = getFormatter('stylish');
+const stylishFormatter = getFormatter('stylish');
 
-  expect(diffString).toEqual(genDiff(diffTreeUnchanged, formatter));
+test.each([
+  ['unchanged', 'stylish_unchanged.txt', diffTreeUnchanged, stylishFormatter],
+  ['removed & added', 'stylish_removed_added.txt', diffTreeRemovedAndAdded, stylishFormatter],
+  ['changed', 'stylish_changed.txt', diffTreeChanged, stylishFormatter],
+])('genDiff stylish %s', (title, fileName, diffTree, formatter) => {
+  const diffString = readFile(fileName);
+  expect(diffString).toEqual(genDiff(diffTree, formatter));
 });
 
-test('genDiff stylish removed & added', () => {
-  const diffString = `{
-    common: {
-        setting1: Value 1
-      - setting2: 200
-      + setting3: true
-      + setting6: {
-            key: value
-        }
-    }
-}`;
-  const formatter = getFormatter('stylish');
+const plainFormatter = getFormatter('plain');
 
-  expect(diffString).toEqual(genDiff(diffTreeRemAndAdd, formatter));
+test.each([
+  ['unchanged', 'plain_unchanged.txt', diffTreeUnchanged, plainFormatter],
+  ['removed & added', 'plain_removed_added.txt', diffTreeRemovedAndAdded, plainFormatter],
+  ['changed', 'plain_changed.txt', diffTreeChanged, plainFormatter],
+])('genDiff plain %s', (title, fileName, diffTree, formatter) => {
+  const diffString = readFile(fileName);
+  expect(diffString).toEqual(genDiff(diffTree, formatter));
 });
 
-test('genDiff stylish changed', () => {
-  const diffString = `{
-    common: {
-      + setting1: Value 1
-      - setting2: 200
-      - setting3: true
-      + setting3: false
-      - setting5: {
-            key5: value5
-        }
-      + setting5: 12345
-      - setting6: {
-            key: value
-        }
-      + setting6: {
-            key: value 6
-        }
-    }
-}`;
-  const formatter = getFormatter('stylish');
+const jsonFormatter = getFormatter('json');
 
-  expect(diffString).toEqual(genDiff(diffTreeChanged, formatter));
-});
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-// Тестирование форматера 'plain'
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-test('genDiff plain unchanged', () => {
-  const diffString = '';
-  const formatter = getFormatter('plain');
-
-  expect(diffString).toEqual(genDiff(diffTreeUnchanged, formatter));
-});
-
-test('genDiff plain removed & added', () => {
-  const diffString = `Property 'common.setting2' was deleted
-Property 'common.setting3' was added with value: true
-Property 'common.setting6' was added with value: [complex value]
-`;
-  const formatter = getFormatter('plain');
-
-  expect(diffString).toEqual(genDiff(diffTreeRemAndAdd, formatter));
-});
-
-test('genDiff plain changed', () => {
-  const diffString = `Property 'common.setting1' was added with value: Value 1
-Property 'common.setting2' was deleted
-Property 'common.setting3' was changed from true to false
-Property 'common.setting5' was changed from [complex value] to 12345
-Property 'common.setting6' was changed from [complex value] to [complex value]
-`;
-  const formatter = getFormatter('plain');
-
-  expect(diffString).toEqual(genDiff(diffTreeChanged, formatter));
-});
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-// Тестирование форматера 'json'
-// ++++++++++++++++++++++++++++++++++++++++++++++++++
-
-test('genDiff json unchanged', () => {
-  const diffString = `[
-  {
-    "name": "common",
-    "type": "unchanged",
-    "value": [
-      {
-        "name": "setting1",
-        "type": "unchanged",
-        "value": "Value 1"
-      },
-      {
-        "name": "setting2",
-        "type": "unchanged",
-        "value": "200"
-      },
-      {
-        "name": "setting3",
-        "type": "unchanged",
-        "value": "true"
-      },
-      {
-        "name": "setting6",
-        "type": "unchanged",
-        "value": [
-          {
-            "name": "key",
-            "type": "unchanged",
-            "value": "value"
-          }
-        ]
-      }
-    ]
-  }
-]`;
-  const formatter = getFormatter('json');
-
-  expect(diffString).toEqual(genDiff(diffTreeUnchanged, formatter));
-});
-
-test('genDiff json removed & added', () => {
-  const diffString = `[
-  {
-    "name": "common",
-    "type": "changed",
-    "value": [
-      {
-        "name": "setting1",
-        "type": "unchanged",
-        "value": "Value 1"
-      },
-      {
-        "name": "setting2",
-        "type": "removed",
-        "value": "200"
-      },
-      {
-        "name": "setting3",
-        "type": "added",
-        "value": "true"
-      },
-      {
-        "name": "setting6",
-        "type": "added",
-        "value": [
-          {
-            "name": "key",
-            "type": "unchanged",
-            "value": "value"
-          }
-        ]
-      }
-    ]
-  }
-]`;
-  const formatter = getFormatter('json');
-
-  expect(diffString).toEqual(genDiff(diffTreeRemAndAdd, formatter));
-});
-
-test('genDiff json changed', () => {
-  const diffString = `[
-  {
-    "name": "common",
-    "type": "changed",
-    "value": [
-      {
-        "name": "setting1",
-        "type": "added",
-        "value": "Value 1"
-      },
-      {
-        "name": "setting2",
-        "type": "removed",
-        "value": "200"
-      },
-      {
-        "name": "setting3",
-        "type": "changed",
-        "beforeValue": "true",
-        "afterValue": "false"
-      },
-      {
-        "name": "setting5",
-        "type": "changed",
-        "beforeValue": [
-          {
-            "name": "key5",
-            "type": "unchanged",
-            "value": "value5"
-          }
-        ],
-        "afterValue": 12345
-      },
-      {
-        "name": "setting6",
-        "type": "changed",
-        "beforeValue": [
-          {
-            "name": "key",
-            "type": "unchanged",
-            "value": "value"
-          }
-        ],
-        "afterValue": [
-          {
-            "name": "key",
-            "type": "unchanged",
-            "value": "value 6"
-          }
-        ]
-      }
-    ]
-  }
-]`;
-  const formatter = getFormatter('json');
-
-  expect(diffString).toEqual(genDiff(diffTreeChanged, formatter));
+test.each([
+  ['unchanged', 'json_unchanged.txt', diffTreeUnchanged, jsonFormatter],
+  ['removed & added', 'json_removed_added.txt', diffTreeRemovedAndAdded, jsonFormatter],
+  ['changed', 'json_changed.txt', diffTreeChanged, jsonFormatter],
+])('genDiff json %s', (title, fileName, diffTree, formatter) => {
+  const diffString = readFile(fileName);
+  expect(diffString).toEqual(genDiff(diffTree, formatter));
 });

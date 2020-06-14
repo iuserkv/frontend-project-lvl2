@@ -1,0 +1,49 @@
+[
+  {
+    "name": "common",
+    "type": "changed",
+    "value": [
+      {
+        "name": "setting1",
+        "type": "unchanged",
+        "value": "Value 1"
+      },
+      {
+        "name": "setting2",
+        "type": "changed",
+        "beforeValue": 200,
+        "afterValue": 100
+      },
+      {
+        "name": "setting5",
+        "type": "changed",
+        "beforeValue": [
+          {
+            "name": "key5",
+            "type": "unchanged",
+            "value": "value5"
+          }
+        ],
+        "afterValue": 12345
+      },
+      {
+        "name": "setting6",
+        "type": "changed",
+        "beforeValue": [
+          {
+            "name": "key",
+            "type": "unchanged",
+            "value": "value"
+          }
+        ],
+        "afterValue": [
+          {
+            "name": "key",
+            "type": "unchanged",
+            "value": "value 6"
+          }
+        ]
+      }
+    ]
+  }
+]
