@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-// Возвращает дерево различий (diffTree) в
-// виде отформатированой строки (как дерево).
 const getStylishFormatedDiff = (diffTree) => {
   const getStylishFormatedString = (tree, padding) => {
     const addPadding = '    ';
@@ -9,7 +7,6 @@ const getStylishFormatedDiff = (diffTree) => {
     const result = tree.reduce((diff, node) => {
       let accString = diff;
 
-      // Узел не изменен.
       if (node.type === 'unchanged') {
         if (!_.isObject(node.value)) {
           accString += `${padding}  ${node.name}: ${node.value}\n`;
@@ -20,7 +17,6 @@ const getStylishFormatedDiff = (diffTree) => {
         }
       }
 
-      // Узел удален.
       if (node.type === 'removed') {
         if (!_.isObject(node.value)) {
           accString += `${padding}- ${node.name}: ${node.value}\n`;
@@ -31,7 +27,6 @@ const getStylishFormatedDiff = (diffTree) => {
         }
       }
 
-      // Узел добавлен.
       if (node.type === 'added') {
         if (!_.isObject(node.value)) {
           accString += `${padding}+ ${node.name}: ${node.value}\n`;
@@ -42,7 +37,6 @@ const getStylishFormatedDiff = (diffTree) => {
         }
       }
 
-      // Узел изменен.
       if (node.type === 'changed') {
         if (_.has(node, 'value')) {
           accString += `${padding}  ${node.name}: {\n`;

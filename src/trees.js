@@ -1,12 +1,9 @@
 import _ from 'lodash';
 
-// Возвращает имя узла node.
 const getNodeName = (node) => node[0];
 
-// Возвращает значение узла node.
 const getNodeValue = (node) => node[1];
 
-// Создает узел дерева различий.
 const makeNode = (name, value, type) => {
   switch (type) {
     case 'unchanged':
@@ -20,7 +17,6 @@ const makeNode = (name, value, type) => {
   }
 };
 
-// Преобразует узел дерева исходного формата в узел дерева различий.
 const convertNode = (tree, type) => {
   // Если tree состоит из одного узла [name, {value}].
   if (tree.length === 2) {
@@ -59,7 +55,6 @@ const convertNode = (tree, type) => {
   return convertedTree;
 };
 
-// Возвращает узел дерева различий, с типом 'changed'.
 const makeChangedNode = (name, oldValue, newValue) => {
   let beforeValue;
   let afterValue;
@@ -84,7 +79,6 @@ const makeChangedNode = (name, oldValue, newValue) => {
   };
 };
 
-// Возвращает дерево различий между деревьями oldTree и newTree.
 const getDiffTree = (oldTree, newTree) => {
   const makeDiffTree = (tree1, tree2, tmpTree) => {
     const diffTree = [...tmpTree];

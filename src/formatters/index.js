@@ -2,7 +2,6 @@ import getStylishFormatedDiff from './stylish.js';
 import getPlainFormatedDiff from './plain.js';
 import getJSONFormatedDiff from './json.js';
 
-// Возвращает форматтер.
 const getFormatter = (formatter) => {
   if (formatter === 'stylish') {
     return getStylishFormatedDiff;

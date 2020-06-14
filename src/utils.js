@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
 
-// Проверяет существование файла.
 const fileExist = (pathToFile) => {
   try {
     fs.statSync(pathToFile);
@@ -14,7 +13,6 @@ const fileExist = (pathToFile) => {
   return true;
 };
 
-// Читает и возвращает данные из фала.
 const readFile = (pathToFile) => {
   const absPathToFile = path.resolve(pathToFile);
   if (fileExist(absPathToFile)) {

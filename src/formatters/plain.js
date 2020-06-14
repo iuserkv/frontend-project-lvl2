@@ -1,8 +1,5 @@
 import _ from 'lodash';
 
-// Возвращает дерево различий (diffTree) в
-// виде отформатированой строки (набор строк с
-// описанием изменений).
 const getPlainFormatedDiff = (diffTree) => {
   const getPlainFormatedString = (tree, parentName, accString) => {
     let result = accString;

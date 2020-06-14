@@ -2,10 +2,8 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-// Парсер JSON-файлов.
 const getParsedJSON = (data) => JSON.parse(data);
 
-// Парсер YAML-файлов.
 const getParsedYAML = (data) => {
   const preparedData = yaml.safeLoad(data);
 
@@ -21,7 +19,6 @@ const getParsedYAML = (data) => {
   }, {});
 };
 
-// Парсер INI-файлов.
 const getParsedINI = (data) => {
   const preparedData = Object.entries(ini.decode(data));
 

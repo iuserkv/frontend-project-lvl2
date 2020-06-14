@@ -5,8 +5,6 @@ import { getParsedJSON, getParsedYAML, getParsedINI } from './parsers.js';
 import getDiffTree from './trees.js';
 import getFormatter from './formatters/index.js';
 
-// Возвращает дерево различий в конфигурационных файлах
-// указанного типа.
 const getDiffTreeConfigs = (typeFiles, dataOfFile1, dataOfFile2) => {
   switch (typeFiles) {
     case '.json': {
@@ -35,10 +33,8 @@ const getDiffTreeConfigs = (typeFiles, dataOfFile1, dataOfFile2) => {
   }
 };
 
-// Возвращает дерево различий diffTree в виде отформатированной строки.
 const genDiff = (diffTree, formatter) => formatter(diffTree);
 
-// Выводит на экран отличия в файлах.
 const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
   const typeFile1 = path.extname(pathToFile1);
   const typeFile2 = path.extname(pathToFile2);
@@ -72,8 +68,6 @@ const showDiff = (typeFormat, pathToFile1, pathToFile2) => {
   console.log(formattedDiffString);
 };
 
-// Обработавыает параметры командной строки
-// и выполняет соответствующие действия.
 const processCommands = (params) => {
   command
     .version('1.0.0')
