@@ -1,3 +1,0 @@
-Property 'common.setting2' was changed from 200 to 100
-Property 'common.setting5' was changed from [complex value] to 12345
-Property 'common.setting6' was changed from [complex value] to [complex value]
