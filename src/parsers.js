@@ -48,4 +48,20 @@ const getParsedINI = (data) => {
   return parsedData;
 };
 
-export { getParsedJSON, getParsedYAML, getParsedINI };
+const parseData = (typeData, data) => {
+  if (typeData === '.json') {
+    return getParsedJSON(data);
+  }
+
+  if (typeData === '.yml') {
+    return getParsedYAML(data);
+  }
+
+  if (typeData === '.ini') {
+    return getParsedINI(data);
+  }
+
+  return null;
+};
+
+export default parseData;

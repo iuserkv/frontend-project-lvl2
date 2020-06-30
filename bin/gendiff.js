@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import processCommands from '../index.js';
+import { showDiff } from '../src/differ.js';
 
-processCommands(process.argv);
+showDiff(process.argv);

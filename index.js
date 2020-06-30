@@ -1,3 +1,3 @@
-import { processCommands } from './src/diffconfigs.js';
+import { genDiff } from './src/differ.js';
 
-export default processCommands;
+export default genDiff;
