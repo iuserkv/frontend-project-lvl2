@@ -4,7 +4,7 @@ const getPlainFormatedDiff = (diffTree) => {
   const getPlainFormatedString = (tree, parentName, accString) => {
     let result = accString;
 
-    // Передан (tree) узел.
+    // Передан узел.
     if (!_.isArray(tree)) {
       const { name, value, type } = { ...tree };
 
@@ -53,7 +53,7 @@ const getPlainFormatedDiff = (diffTree) => {
           result += `Property '${property}' was added with value: [complex value]\n`;
         }
       }
-    // Передано (tree) дерево.
+    // Передано дерево.
     } else {
       tree.forEach((node) => {
         result += getPlainFormatedString(node, parentName, accString);

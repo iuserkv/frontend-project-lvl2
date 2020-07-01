@@ -2,23 +2,6 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const getParsedJSON = (data) => JSON.parse(data);
-
-const getParsedYAML = (data) => {
-  const preparedData = yaml.safeLoad(data);
-
-  if (!_.isArray(preparedData)) {
-    return preparedData;
-  }
-
-  return preparedData.reduce((acc, item) => {
-    const [key, value] = Object.entries(item)[0];
-    acc[key] = value;
-
-    return acc;
-  }, {});
-};
-
 const getParsedINI = (data) => {
   const preparedData = Object.entries(ini.decode(data));
 
@@ -50,18 +33,18 @@ const getParsedINI = (data) => {
 
 const parseData = (typeData, data) => {
   if (typeData === '.json') {
-    return getParsedJSON(data);
+    return JSON.parse(data);
   }
 
   if (typeData === '.yml') {
-    return getParsedYAML(data);
+    return yaml.safeLoad(data);
   }
 
   if (typeData === '.ini') {
     return getParsedINI(data);
   }
 
-  return null;
+  throw new Error('Unknown data type!');
 };
 
 export default parseData;
