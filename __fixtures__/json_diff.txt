@@ -1,11 +1,37 @@
 [
   {
+    "name": "group2",
+    "value": [
+      {
+        "name": "abc",
+        "value": 12345,
+        "type": "unchanged"
+      }
+    ],
+    "type": "removed"
+  },
+  {
     "name": "common",
     "value": [
+      {
+        "name": "setting2",
+        "value": 200,
+        "type": "removed"
+      },
+      {
+        "name": "follow",
+        "value": false,
+        "type": "added"
+      },
       {
         "name": "setting1",
         "value": "Value 1",
         "type": "unchanged"
+      },
+      {
+        "name": "setting4",
+        "value": "blah blah",
+        "type": "added"
       },
       {
         "name": "setting3",
@@ -18,6 +44,17 @@
           }
         ],
         "type": "changed"
+      },
+      {
+        "name": "setting5",
+        "value": [
+          {
+            "name": "key5",
+            "value": "value5",
+            "type": "unchanged"
+          }
+        ],
+        "type": "added"
       },
       {
         "name": "setting6",
@@ -34,32 +71,6 @@
           }
         ],
         "type": "changed"
-      },
-      {
-        "name": "setting2",
-        "value": 200,
-        "type": "removed"
-      },
-      {
-        "name": "follow",
-        "value": false,
-        "type": "added"
-      },
-      {
-        "name": "setting4",
-        "value": "blah blah",
-        "type": "added"
-      },
-      {
-        "name": "setting5",
-        "value": [
-          {
-            "name": "key5",
-            "value": "value5",
-            "type": "unchanged"
-          }
-        ],
-        "type": "added"
       }
     ],
     "type": "changed"
@@ -68,15 +79,15 @@
     "name": "group1",
     "value": [
       {
+        "name": "foo",
+        "value": "bar",
+        "type": "unchanged"
+      },
+      {
         "name": "baz",
         "beforeValue": "bas",
         "afterValue": "bars",
         "type": "changed"
-      },
-      {
-        "name": "foo",
-        "value": "bar",
-        "type": "unchanged"
       },
       {
         "name": "nest",
@@ -92,17 +103,6 @@
       }
     ],
     "type": "changed"
-  },
-  {
-    "name": "group2",
-    "value": [
-      {
-        "name": "abc",
-        "value": 12345,
-        "type": "unchanged"
-      }
-    ],
-    "type": "removed"
   },
   {
     "name": "group3",

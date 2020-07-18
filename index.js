@@ -12,7 +12,7 @@ const readFile = (pathToFile) => {
 };
 
 const genDiff = (pathToFile1, pathToFile2, format = 'stylish') => {
-  const typeFile = path.extname(pathToFile1);
+  const typeFile = path.extname(pathToFile1).slice(1);
 
   const data1 = readFile(pathToFile1);
   const data2 = readFile(pathToFile2);
