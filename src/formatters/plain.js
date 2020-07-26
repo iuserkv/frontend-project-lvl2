@@ -18,23 +18,23 @@ const getPlainFormatedDiff = (diffTree) => {
 
       // Узел изменен.
       if (type === 'changed') {
-        let beforeValue;
-        let afterValue;
+        let valueBefore;
+        let valueAfter;
 
         if (!_.isArray(value)) {
-          if (!_.isObject(tree.beforeValue)) {
-            beforeValue = tree.beforeValue;
+          if (!_.isObject(tree.valueBefore)) {
+            valueBefore = tree.valueBefore;
           } else {
-            beforeValue = '[complex value]';
+            valueBefore = '[complex value]';
           }
 
-          if (!_.isObject(tree.afterValue)) {
-            afterValue = tree.afterValue;
+          if (!_.isObject(tree.valueAfter)) {
+            valueAfter = tree.valueAfter;
           } else {
-            afterValue = '[complex value]';
+            valueAfter = '[complex value]';
           }
 
-          result += `Property '${property}' was changed from ${beforeValue} to ${afterValue}\n`;
+          result += `Property '${property}' was changed from ${valueBefore} to ${valueAfter}\n`;
         } else {
           result += getPlainFormatedString(value, property, accString);
         }

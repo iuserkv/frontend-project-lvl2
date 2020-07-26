@@ -1,114 +1,99 @@
-const getConvertedData = (tree) => {
-  const convertedTree = Object.entries(tree).map((node) => {
-    const name = node[0];
-    const value = node[1];
+import _ from 'lodash';
 
-    if (typeof value !== 'object') {
-      return { name, value, type: 'unchanged' };
+const getNewValue = (value) => {
+  if (typeof value !== 'object') {
+    return value;
+  }
+
+  const newValue = Object.entries(value).map((node) => {
+    const [name, receivedValue] = [...node];
+
+    if (typeof receivedValue !== 'object') {
+      const newNode = {
+        name,
+        value: receivedValue,
+        type: 'unchanged',
+      };
+
+      return newNode;
     }
 
-    return { name, value: getConvertedData(value), type: 'unchanged' };
-  });
-
-  return convertedTree;
-};
-
-const getNodeByName = (tree, nodeName) => tree.filter((node) => node.name === nodeName)[0];
-
-const isLeafNode = (node) => typeof node.value !== 'object';
-
-const getTreeMarkedRemNodes = (firstTree, secondTree) => {
-  const treeMarkedRemNodes = firstTree.map((node) => {
-    const { name, value } = { ...node };
-
-    const findedNode = getNodeByName(secondTree, name);
-
-    if (findedNode === undefined) {
-      const removedNode = { ...node, type: 'removed' };
-
-      return removedNode;
-    }
-
-    if (findedNode.value === value) {
-      const unchangedNode = { ...node, type: 'unchanged' };
-
-      return unchangedNode;
-    }
-
-    if (isLeafNode(findedNode) || isLeafNode(node)) {
-      const changedNode = { ...node, type: 'changed' };
-
-      return changedNode;
-    }
-
-    const changedNode = {
+    const newNode = {
       name,
-      value: getTreeMarkedRemNodes(value, findedNode.value),
-      type: 'changed',
+      value: getNewValue(value),
+      type: 'unchanged',
     };
 
-    return changedNode;
+    return newNode;
   });
 
-  return treeMarkedRemNodes;
+  return newValue;
 };
 
-const getTreeMarkedAddChgNodes = (firstTree, secondTree) => {
-  const treeMarkedAddChgNodes = secondTree.reduce((acc, node) => {
-    const { name, value } = { ...node };
+const getDiffTree = (treeBefore, treeAfter) => {
+  const keysBefore = Object.keys(treeBefore);
+  const keysAfter = Object.keys(treeAfter);
+  const keysUnion = _.union(keysBefore, keysAfter);
 
-    const findedNode = getNodeByName(firstTree, name);
+  const diffTree = keysUnion.map((key) => {
+    if (_.has(treeBefore, key) && !_.has(treeAfter, key)) {
+      const value = _.get(treeBefore, key);
+      const newValue = getNewValue(value);
+      const newNode = {
+        name: key,
+        value: newValue,
+        type: 'removed',
+      };
 
-    if (findedNode === undefined) {
-      const addedNode = { ...node, type: 'added' };
-      acc.push(addedNode);
-
-      return acc;
+      return newNode;
     }
 
-    if (findedNode.value === value) {
-      const unchangedNode = { ...findedNode, type: 'unchanged' };
-      const newAcc = acc.filter((newNode) => newNode.name !== name);
-      newAcc.push(unchangedNode);
+    if (!_.has(treeBefore, key) && _.has(treeAfter, key)) {
+      const value = _.get(treeAfter, key);
+      const newValue = getNewValue(value);
+      const newNode = {
+        name: key,
+        value: newValue,
+        type: 'added',
+      };
 
-      return newAcc;
+      return newNode;
     }
 
-    if (isLeafNode(findedNode) || isLeafNode(node)) {
-      const changedNode = {
-        name,
-        beforeValue: findedNode.value,
-        afterValue: node.value,
+    const valueBefore = _.get(treeBefore, key);
+    const valueAfter = _.get(treeAfter, key);
+
+    if (_.isEqual(valueBefore, valueAfter)) {
+      const newNode = {
+        name: key,
+        value: valueBefore,
+        type: 'unchanged',
+      };
+
+      return newNode;
+    }
+
+    if ((typeof valueBefore !== 'object') || (typeof valueAfter !== 'object')) {
+      const newNode = {
+        name: key,
+        valueBefore: getNewValue(valueBefore),
+        valueAfter: getNewValue(valueAfter),
         type: 'changed',
       };
-      const newAcc = acc.filter((newNode) => newNode.name !== name);
-      newAcc.push(changedNode);
 
-      return newAcc;
+      return newNode;
     }
 
-    const changedNode = {
-      name,
-      value: getTreeMarkedAddChgNodes(findedNode.value, value),
+    const newNode = {
+      name: key,
+      value: getDiffTree(valueBefore, valueAfter),
       type: 'changed',
     };
-    const newAcc = acc.filter((newNode) => newNode.name !== name);
-    newAcc.push(changedNode);
 
-    return newAcc;
-  }, firstTree);
+    return newNode;
+  });
 
-  return treeMarkedAddChgNodes;
-};
-
-const getDiffTree = (dataBefore, dataAfter) => {
-  const convertedDataBefore = getConvertedData(dataBefore);
-  const convertedDataAfter = getConvertedData(dataAfter);
-
-  const treeMarkedRemNodes = getTreeMarkedRemNodes(convertedDataBefore, convertedDataAfter);
-  const diffData = getTreeMarkedAddChgNodes(treeMarkedRemNodes, convertedDataAfter);
-
-  return diffData;
+  return diffTree;
 };
 
 export default getDiffTree;

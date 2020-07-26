@@ -43,19 +43,19 @@ const getStylishFormatedDiff = (diffTree) => {
           accString += getStylishFormatedString(node.value, padding + addPadding);
           accString += `${padding}  }\n`;
         } else {
-          if (!_.isObject(node.beforeValue)) {
-            accString += `${padding}- ${node.name}: ${node.beforeValue}\n`;
+          if (!_.isObject(node.valueBefore)) {
+            accString += `${padding}- ${node.name}: ${node.valueBefore}\n`;
           } else {
             accString += `${padding}- ${node.name}: {\n`;
-            accString += getStylishFormatedString(node.beforeValue, padding + addPadding);
+            accString += getStylishFormatedString(node.valueBefore, padding + addPadding);
             accString += `${padding}  }\n`;
           }
 
-          if (!_.isObject(node.afterValue)) {
-            accString += `${padding}+ ${node.name}: ${node.afterValue}\n`;
+          if (!_.isObject(node.valueAfter)) {
+            accString += `${padding}+ ${node.name}: ${node.valueAfter}\n`;
           } else {
             accString += `${padding}+ ${node.name}: {\n`;
-            accString += getStylishFormatedString(node.afterValue, padding + addPadding);
+            accString += getStylishFormatedString(node.valueAfter, padding + addPadding);
             accString += `${padding}  }\n`;
           }
         }
