@@ -1,71 +1,63 @@
 import _ from 'lodash';
 
 const getPlainFormatedDiff = (diffTree) => {
-  const getPlainFormatedString = (tree, parentName, accString) => {
-    let result = accString;
+  const getFormatedLines = (tree, parent) => {
+    const ancestors = (parent === '') ? '' : `${parent}.`;
 
-    // Передан узел.
-    if (!_.isArray(tree)) {
-      const { name, value, type } = { ...tree };
+    const formatedLines = tree.map((node) => {
+      const {
+        name,
+        value,
+        valueBefore,
+        valueAfter,
+        type,
+      } = { ...node };
 
-      let property;
-
-      if (parentName !== '') {
-        property = `${parentName}.${name}`;
-      } else {
-        property = `${name}`;
+      if (type === 'removed') {
+        return `Property '${ancestors}${name}' was deleted\n`;
       }
 
-      // Узел изменен.
-      if (type === 'changed') {
-        let valueBefore;
-        let valueAfter;
+      if (type === 'added') {
+        if (typeof value !== 'object') {
+          return `Property '${ancestors}${name}' was added with value: ${value}\n`;
+        }
 
         if (!_.isArray(value)) {
-          if (!_.isObject(tree.valueBefore)) {
-            valueBefore = tree.valueBefore;
-          } else {
-            valueBefore = '[complex value]';
+          return `Property '${ancestors}${name}' was added with value: [complex value]\n`;
+        }
+
+        return getFormatedLines(value, `${ancestors}${name}`);
+      }
+
+      if (type === 'changed') {
+        if (value === undefined) {
+          if (typeof valueBefore !== 'object') {
+            if (typeof valueAfter !== 'object') {
+              return `Property '${ancestors}${name}' was changed from ${valueBefore} to ${valueAfter}\n`;
+            }
+
+            return `Property '${ancestors}${name}' was changed from ${valueBefore} to [complex value]\n`;
           }
 
-          if (!_.isObject(tree.valueAfter)) {
-            valueAfter = tree.valueAfter;
-          } else {
-            valueAfter = '[complex value]';
+          if (typeof valueAfter !== 'object') {
+            return `Property '${ancestors}${name}' was changed from [complex value] to ${valueAfter}\n`;
           }
 
-          result += `Property '${property}' was changed from ${valueBefore} to ${valueAfter}\n`;
-        } else {
-          result += getPlainFormatedString(value, property, accString);
+          return `Property '${ancestors}${name}' was changed from [complex value] to [complex value]\n`;
         }
+
+        return getFormatedLines(value, `${ancestors}${name}`);
       }
 
-      // Узел удален.
-      if (type === 'removed') {
-        result += `Property '${property}' was deleted\n`;
-      }
+      return '';
+    });
 
-      // Узел добавлен.
-      if (type === 'added') {
-        if (!_.isObject(value)) {
-          result += `Property '${property}' was added with value: ${value}\n`;
-        } else {
-          result += `Property '${property}' was added with value: [complex value]\n`;
-        }
-      }
-    // Передано дерево.
-    } else {
-      tree.forEach((node) => {
-        result += getPlainFormatedString(node, parentName, accString);
-      });
-    }
-
-    return result;
+    return formatedLines;
   };
 
-  const PlainFormatedString = getPlainFormatedString(diffTree, '', '');
+  const plainFormatedDiff = getFormatedLines(diffTree, '').flat(Infinity).join('');
 
-  return PlainFormatedString;
+  return plainFormatedDiff;
 };
 
 export default getPlainFormatedDiff;

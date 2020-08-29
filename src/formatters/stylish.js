@@ -1,76 +1,103 @@
 import _ from 'lodash';
 
+const getFormatedLine = (type, name, value, prefix, depth) => {
+  if (typeof value !== 'object') {
+    if (type === 'unchanged') {
+      return `${prefix.repeat(depth)}${name}: ${value}\n`;
+    }
+
+    if (type === 'removed') {
+      return `${prefix.repeat(depth).slice(0, -2)}- ${name}: ${value}\n`;
+    }
+
+    if (type === 'added') {
+      return `${prefix.repeat(depth).slice(0, -2)}+ ${name}: ${value}\n`;
+    }
+
+    return '';
+  }
+
+  if (!_.isArray(value)) {
+    const subName = Object.entries(value).flat()[0];
+    const subValue = Object.entries(value).flat()[1];
+
+    if (type === 'unchanged') {
+      return ''.concat(
+        `${prefix.repeat(depth)}  ${name}: {\n`,
+        `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
+        `${prefix.repeat(depth)}}\n`,
+      );
+    }
+
+    if (type === 'removed') {
+      return ''.concat(
+        `${prefix.repeat(depth).slice(0, -2)}- ${name}: {\n`,
+        `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
+        `${prefix.repeat(depth)}}\n`,
+      );
+    }
+
+    if (type === 'added') {
+      return ''.concat(
+        `${prefix.repeat(depth).slice(0, -2)}+ ${name}: {\n`,
+        `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
+        `${prefix.repeat(depth)}}\n`,
+      );
+    }
+
+    return '';
+  }
+
+  return '';
+};
+
 const getStylishFormatedDiff = (diffTree) => {
-  const getStylishFormatedString = (tree, padding) => {
-    const addPadding = '    ';
+  const getFormatedLines = (tree, depth) => {
+    const prefix = '    ';
 
-    const result = tree.reduce((diff, node) => {
-      let accString = diff;
+    const formatedLines = tree.map((node) => {
+      const {
+        name,
+        value,
+        valueBefore,
+        valueAfter,
+        type,
+      } = { ...node };
 
-      if (node.type === 'unchanged') {
-        if (!_.isObject(node.value)) {
-          accString += `${padding}  ${node.name}: ${node.value}\n`;
-        } else {
-          accString += `${padding}  ${node.name}: {\n`;
-          accString += getStylishFormatedString(node.value, padding + addPadding);
-          accString += `${padding}  }\n`;
+      if (value !== undefined) {
+        if (!_.isArray(value)) {
+          const formatedLine = getFormatedLine(type, name, value, prefix, depth);
+
+          return formatedLine;
         }
+
+        const formatedLine = ''.concat(
+          `${prefix.repeat(depth)}${name}: {\n`,
+          `${getFormatedLines(value, depth + 1)}`,
+          `${prefix.repeat(depth)}}\n`,
+        );
+
+        return formatedLine;
       }
 
-      if (node.type === 'removed') {
-        if (!_.isObject(node.value)) {
-          accString += `${padding}- ${node.name}: ${node.value}\n`;
-        } else {
-          accString += `${padding}- ${node.name}: {\n`;
-          accString += getStylishFormatedString(node.value, padding + addPadding);
-          accString += `${padding}  }\n`;
-        }
-      }
+      const formatedLine = ''.concat(
+        getFormatedLine('removed', name, valueBefore, prefix, depth),
+        getFormatedLine('added', name, valueAfter, prefix, depth),
+      );
 
-      if (node.type === 'added') {
-        if (!_.isObject(node.value)) {
-          accString += `${padding}+ ${node.name}: ${node.value}\n`;
-        } else {
-          accString += `${padding}+ ${node.name}: {\n`;
-          accString += getStylishFormatedString(node.value, padding + addPadding);
-          accString += `${padding}  }\n`;
-        }
-      }
+      return formatedLine;
+    });
 
-      if (node.type === 'changed') {
-        if (_.has(node, 'value')) {
-          accString += `${padding}  ${node.name}: {\n`;
-          accString += getStylishFormatedString(node.value, padding + addPadding);
-          accString += `${padding}  }\n`;
-        } else {
-          if (!_.isObject(node.valueBefore)) {
-            accString += `${padding}- ${node.name}: ${node.valueBefore}\n`;
-          } else {
-            accString += `${padding}- ${node.name}: {\n`;
-            accString += getStylishFormatedString(node.valueBefore, padding + addPadding);
-            accString += `${padding}  }\n`;
-          }
-
-          if (!_.isObject(node.valueAfter)) {
-            accString += `${padding}+ ${node.name}: ${node.valueAfter}\n`;
-          } else {
-            accString += `${padding}+ ${node.name}: {\n`;
-            accString += getStylishFormatedString(node.valueAfter, padding + addPadding);
-            accString += `${padding}  }\n`;
-          }
-        }
-      }
-
-      return accString;
-    }, '');
-
-    return result;
+    return formatedLines.join('');
   };
 
-  const padding = '  ';
-  const stylishFormatedString = `{\n${getStylishFormatedString(diffTree, padding)}}`;
+  const stylishFormatedDiff = ''.concat(
+    '{\n',
+    getFormatedLines(diffTree, 1),
+    '}',
+  );
 
-  return stylishFormatedString;
+  return stylishFormatedDiff;
 };
 
 export default getStylishFormatedDiff;

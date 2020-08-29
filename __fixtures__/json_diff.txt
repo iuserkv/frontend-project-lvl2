@@ -15,13 +15,9 @@
       {
         "name": "setting3",
         "valueBefore": true,
-        "valueAfter": [
-          {
-            "name": "key",
-            "value": "value",
-            "type": "unchanged"
-          }
-        ],
+        "valueAfter": {
+          "key": "value"
+        },
         "type": "changed"
       },
       {
@@ -52,13 +48,9 @@
       },
       {
         "name": "setting5",
-        "value": [
-          {
-            "name": "key5",
-            "value": "value5",
-            "type": "unchanged"
-          }
-        ],
+        "value": {
+          "key5": "value5"
+        },
         "type": "added"
       }
     ],
@@ -80,13 +72,9 @@
       },
       {
         "name": "nest",
-        "valueBefore": [
-          {
-            "name": "key",
-            "value": "value",
-            "type": "unchanged"
-          }
-        ],
+        "valueBefore": {
+          "key": "value"
+        },
         "valueAfter": "str",
         "type": "changed"
       }
@@ -95,24 +83,16 @@
   },
   {
     "name": "group2",
-    "value": [
-      {
-        "name": "abc",
-        "value": 12345,
-        "type": "unchanged"
-      }
-    ],
+    "value": {
+      "abc": 12345
+    },
     "type": "removed"
   },
   {
     "name": "group3",
-    "value": [
-      {
-        "name": "fee",
-        "value": 100500,
-        "type": "unchanged"
-      }
-    ],
+    "value": {
+      "fee": 100500
+    },
     "type": "added"
   }
 ]

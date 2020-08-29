@@ -1,7 +1,3 @@
-const getJSONFormatedDiff = (diffTree) => {
-  const result = JSON.stringify(diffTree, null, 2);
-
-  return result;
-};
+const getJSONFormatedDiff = (diffTree) => JSON.stringify(diffTree, null, 2);
 
 export default getJSONFormatedDiff;
