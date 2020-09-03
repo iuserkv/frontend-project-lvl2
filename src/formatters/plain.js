@@ -1,5 +1,21 @@
 import _ from 'lodash';
 
+const getFormatedLine = (type, name, value, valueBefore, valueAfter) => {
+  if (type === 'removed') {
+    return `Property '${name}' was deleted`;
+  }
+
+  if (type === 'added') {
+    return `Property '${name}' was added with value: ${value}`;
+  }
+
+  if (type === 'changed') {
+    return `Property '${name}' was changed from ${valueBefore} to ${valueAfter}`;
+  }
+
+  return '';
+};
+
 const getPlainFormatedDiff = (diffTree) => {
   const getFormatedLines = (tree, parent) => {
     const ancestors = (parent === '') ? '' : `${parent}.`;
@@ -13,49 +29,33 @@ const getPlainFormatedDiff = (diffTree) => {
         type,
       } = { ...node };
 
-      if (type === 'removed') {
-        return `Property '${ancestors}${name}' was deleted\n`;
-      }
+      const fullName = `${ancestors}${name}`;
 
-      if (type === 'added') {
-        if (typeof value !== 'object') {
-          return `Property '${ancestors}${name}' was added with value: ${value}\n`;
+      if (value !== undefined) {
+        if (!_.isObject(value)) {
+          return getFormatedLine(type, fullName, value);
         }
 
         if (!_.isArray(value)) {
-          return `Property '${ancestors}${name}' was added with value: [complex value]\n`;
+          return getFormatedLine(type, fullName, '[complex value]');
         }
 
-        return getFormatedLines(value, `${ancestors}${name}`);
+        return getFormatedLines(value, fullName);
       }
 
-      if (type === 'changed') {
-        if (value === undefined) {
-          if (typeof valueBefore !== 'object') {
-            if (typeof valueAfter !== 'object') {
-              return `Property '${ancestors}${name}' was changed from ${valueBefore} to ${valueAfter}\n`;
-            }
+      const before = !_.isObject(valueBefore) ? valueBefore : '[complex value]';
+      const after = !_.isObject(valueAfter) ? valueAfter : '[complex value]';
 
-            return `Property '${ancestors}${name}' was changed from ${valueBefore} to [complex value]\n`;
-          }
-
-          if (typeof valueAfter !== 'object') {
-            return `Property '${ancestors}${name}' was changed from [complex value] to ${valueAfter}\n`;
-          }
-
-          return `Property '${ancestors}${name}' was changed from [complex value] to [complex value]\n`;
-        }
-
-        return getFormatedLines(value, `${ancestors}${name}`);
-      }
-
-      return '';
+      return getFormatedLine(type, fullName, value, before, after);
     });
 
     return formatedLines;
   };
 
-  const plainFormatedDiff = getFormatedLines(diffTree, '').flat(Infinity).join('');
+  const plainFormatedDiff = getFormatedLines(diffTree, '')
+    .flat(Infinity)
+    .filter((line) => line !== '')
+    .join('\n');
 
   return plainFormatedDiff;
 };

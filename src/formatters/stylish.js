@@ -1,17 +1,17 @@
 import _ from 'lodash';
 
 const getFormatedLine = (type, name, value, prefix, depth) => {
-  if (typeof value !== 'object') {
+  if (!_.isObject(value)) {
     if (type === 'unchanged') {
-      return `${prefix.repeat(depth)}${name}: ${value}\n`;
+      return `${prefix.repeat(depth)}${name}: ${value}`;
     }
 
     if (type === 'removed') {
-      return `${prefix.repeat(depth).slice(0, -2)}- ${name}: ${value}\n`;
+      return `${prefix.repeat(depth).slice(0, -2)}- ${name}: ${value}`;
     }
 
     if (type === 'added') {
-      return `${prefix.repeat(depth).slice(0, -2)}+ ${name}: ${value}\n`;
+      return `${prefix.repeat(depth).slice(0, -2)}+ ${name}: ${value}`;
     }
 
     return '';
@@ -25,7 +25,7 @@ const getFormatedLine = (type, name, value, prefix, depth) => {
       return ''.concat(
         `${prefix.repeat(depth)}  ${name}: {\n`,
         `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
-        `${prefix.repeat(depth)}}\n`,
+        `${prefix.repeat(depth)}}`,
       );
     }
 
@@ -33,7 +33,7 @@ const getFormatedLine = (type, name, value, prefix, depth) => {
       return ''.concat(
         `${prefix.repeat(depth).slice(0, -2)}- ${name}: {\n`,
         `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
-        `${prefix.repeat(depth)}}\n`,
+        `${prefix.repeat(depth)}}`,
       );
     }
 
@@ -41,7 +41,7 @@ const getFormatedLine = (type, name, value, prefix, depth) => {
       return ''.concat(
         `${prefix.repeat(depth).slice(0, -2)}+ ${name}: {\n`,
         `${prefix.repeat(depth + 1)}${subName}: ${subValue}\n`,
-        `${prefix.repeat(depth)}}\n`,
+        `${prefix.repeat(depth)}}`,
       );
     }
 
@@ -66,36 +66,28 @@ const getStylishFormatedDiff = (diffTree) => {
 
       if (value !== undefined) {
         if (!_.isArray(value)) {
-          const formatedLine = getFormatedLine(type, name, value, prefix, depth);
-
-          return formatedLine;
+          return getFormatedLine(type, name, value, prefix, depth);
         }
 
-        const formatedLine = ''.concat(
-          `${prefix.repeat(depth)}${name}: {\n`,
-          `${getFormatedLines(value, depth + 1)}`,
-          `${prefix.repeat(depth)}}\n`,
-        );
+        const formatedLine = [];
+        formatedLine.push(`${prefix.repeat(depth)}${name}: {`);
+        formatedLine.push(`${getFormatedLines(value, depth + 1)}`);
+        formatedLine.push(`${prefix.repeat(depth)}}`);
 
-        return formatedLine;
+        return formatedLine.join('\n');
       }
 
-      const formatedLine = ''.concat(
-        getFormatedLine('removed', name, valueBefore, prefix, depth),
-        getFormatedLine('added', name, valueAfter, prefix, depth),
-      );
+      const formatedLine = [];
+      formatedLine.push(getFormatedLine('removed', name, valueBefore, prefix, depth));
+      formatedLine.push(getFormatedLine('added', name, valueAfter, prefix, depth));
 
-      return formatedLine;
+      return formatedLine.join('\n');
     });
 
-    return formatedLines.join('');
+    return formatedLines.join('\n');
   };
 
-  const stylishFormatedDiff = ''.concat(
-    '{\n',
-    getFormatedLines(diffTree, 1),
-    '}',
-  );
+  const stylishFormatedDiff = `{\n${getFormatedLines(diffTree, 1)}\n}`;
 
   return stylishFormatedDiff;
 };

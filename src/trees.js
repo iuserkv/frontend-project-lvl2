@@ -7,7 +7,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
 
   const diffTree = keysUnion.map((key) => {
     if (!_.has(treeAfter, key)) {
-      const value = _.cloneDeep(treeBefore[key]);
+      const value = treeBefore[key];
       const newNode = {
         name: key,
         value,
@@ -18,7 +18,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
     }
 
     if (!_.has(treeBefore, key)) {
-      const value = _.cloneDeep(treeAfter[key]);
+      const value = treeAfter[key];
       const newNode = {
         name: key,
         value,
@@ -28,8 +28,8 @@ const getDiffTree = (treeBefore, treeAfter) => {
       return newNode;
     }
 
-    const valueBefore = _.cloneDeep(treeBefore[key]);
-    const valueAfter = _.cloneDeep(treeAfter[key]);
+    const valueBefore = treeBefore[key];
+    const valueAfter = treeAfter[key];
 
     if (_.isEqual(valueBefore, valueAfter)) {
       const newNode = {
@@ -41,7 +41,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
       return newNode;
     }
 
-    if ((typeof valueBefore !== 'object') || (typeof valueAfter !== 'object')) {
+    if (!_.isObject(valueBefore) || !_.isObject(valueAfter)) {
       const newNode = {
         name: key,
         valueBefore,

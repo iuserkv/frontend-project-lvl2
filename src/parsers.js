@@ -8,7 +8,7 @@ const getParsedINI = (data) => {
   const parseINI = (iniData) => iniData.reduce((acc, item) => {
     const [key, value] = [...item];
     // Убираем кавычки для чисел.
-    if (typeof value === 'string') {
+    if (_.isString(value)) {
       acc[key] = Number.isNaN(+value) ? value : +value;
 
       return acc;

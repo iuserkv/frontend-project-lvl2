@@ -2,7 +2,6 @@
   "name": "frontend-project-lvl2",
   "version": "1.0.0",
   "description": "Compares two configuration files and shows a difference.",
-  
   "bin": {
     "gendiff": "/bin/gendiff.js"
   },
