@@ -1,7 +1,7 @@
 [
   {
     "name": "common",
-    "value": [
+    "children": [
       {
         "name": "setting1",
         "value": "Value 1",
@@ -22,7 +22,7 @@
       },
       {
         "name": "setting6",
-        "value": [
+        "children": [
           {
             "name": "key",
             "value": "value",
@@ -33,8 +33,7 @@
             "value": "vops",
             "type": "added"
           }
-        ],
-        "type": "changed"
+        ]
       },
       {
         "name": "follow",
@@ -53,12 +52,11 @@
         },
         "type": "added"
       }
-    ],
-    "type": "changed"
+    ]
   },
   {
     "name": "group1",
-    "value": [
+    "children": [
       {
         "name": "baz",
         "valueBefore": "bas",
@@ -78,8 +76,7 @@
         "valueAfter": "str",
         "type": "changed"
       }
-    ],
-    "type": "changed"
+    ]
   },
   {
     "name": "group2",

@@ -21,7 +21,6 @@ const genDiff = (pathToFile1, pathToFile2, format = 'stylish') => {
   const parsedData2 = parseData(typeFile, data2);
 
   const diffTree = getDiffTree(parsedData1, parsedData2);
-
   const getFormattedDiff = getFormatter(format);
   const formattedDiff = getFormattedDiff(diffTree);
 

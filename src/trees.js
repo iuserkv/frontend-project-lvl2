@@ -31,7 +31,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
     const valueBefore = treeBefore[key];
     const valueAfter = treeAfter[key];
 
-    if (_.isEqual(valueBefore, valueAfter)) {
+    if (valueBefore === valueAfter) {
       const newNode = {
         name: key,
         value: valueBefore,
@@ -54,8 +54,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
 
     const newNode = {
       name: key,
-      value: getDiffTree(valueBefore, valueAfter),
-      type: 'changed',
+      children: getDiffTree(valueBefore, valueAfter),
     };
 
     return newNode;

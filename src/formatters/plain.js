@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+const getValue = (value) => (!_.isObject(value) ? value : '[complex value]');
+
 const getFormatedLine = (type, name, value, valueBefore, valueAfter) => {
   if (type === 'removed') {
     return `Property '${name}' was deleted`;
@@ -27,26 +29,28 @@ const getPlainFormatedDiff = (diffTree) => {
         valueBefore,
         valueAfter,
         type,
+        children,
       } = { ...node };
 
       const fullName = `${ancestors}${name}`;
 
-      if (value !== undefined) {
-        if (!_.isObject(value)) {
-          return getFormatedLine(type, fullName, value);
-        }
-
-        if (!_.isArray(value)) {
-          return getFormatedLine(type, fullName, '[complex value]');
-        }
-
-        return getFormatedLines(value, fullName);
+      if (type === 'removed') {
+        return getFormatedLine(type, fullName);
       }
 
-      const before = !_.isObject(valueBefore) ? valueBefore : '[complex value]';
-      const after = !_.isObject(valueAfter) ? valueAfter : '[complex value]';
+      if (type === 'added') {
+        return getFormatedLine(type, fullName, getValue(value));
+      }
 
-      return getFormatedLine(type, fullName, value, before, after);
+      if (type === 'unchanged') {
+        return '';
+      }
+
+      if (type === 'changed') {
+        return getFormatedLine(type, fullName, value, getValue(valueBefore), getValue(valueAfter));
+      }
+
+      return getFormatedLines(children, fullName);
     });
 
     return formatedLines;

@@ -32,19 +32,16 @@ const getParsedINI = (data) => {
 };
 
 const parseData = (typeData, data) => {
-  if (typeData === 'json') {
-    return JSON.parse(data);
+  switch (typeData) {
+    case 'json':
+      return JSON.parse(data);
+    case 'yml':
+      return yaml.safeLoad(data);
+    case 'ini':
+      return getParsedINI(data);
+    default:
+      throw new Error(`Unknown data type: ${typeData}`);
   }
-
-  if (typeData === 'yml') {
-    return yaml.safeLoad(data);
-  }
-
-  if (typeData === 'ini') {
-    return getParsedINI(data);
-  }
-
-  throw new Error(`Unknown data type: ${typeData}`);
 };
 
 export default parseData;
