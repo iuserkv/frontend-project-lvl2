@@ -5,20 +5,21 @@ const getFormatedLine = (name, value, prefix, padding) => {
     return `${padding}${prefix}${name}: ${value}`;
   }
 
-  const subName = Object.entries(value).flat()[0];
-  const subValue = Object.entries(value).flat()[1];
+  const node = Object.entries(value);
+  const newPadding = `${padding}  `;
 
-  const formatedLine = [
+  return [
     `${padding}${prefix}${name}: {`,
-    `${padding}      ${subName}: ${subValue}`,
+    node.map((child) => {
+      const [childName, childValue] = [...child];
+      return getFormatedLine(childName, childValue, '  ', `${newPadding}  `);
+    }).join('\n'),
     `${padding}  }`,
-  ];
-
-  return formatedLine.join('\n');
+  ].join('\n');
 };
 
 const getStylishFormatedDiff = (diffTree) => {
-  const getFormatedLines = (tree, depth) => {
+  const getFormatedLines = (tree, padding) => {
     const formatedLines = tree.map((node) => {
       const {
         name,
@@ -29,47 +30,35 @@ const getStylishFormatedDiff = (diffTree) => {
         children,
       } = { ...node };
 
-      const placeholder = '  ';
-      const padding = placeholder.repeat(depth * 2 - 1);
+      switch (type) {
+        case 'unchanged':
+          return getFormatedLine(name, value, '  ', padding);
+        case 'removed':
+          return getFormatedLine(name, value, '- ', padding);
+        case 'added':
+          return getFormatedLine(name, value, '+ ', padding);
+        case 'changed': {
+          return [
+            `${getFormatedLine(name, valueBefore, '- ', padding)}`,
+            `${getFormatedLine(name, valueAfter, '+ ', padding)}`,
+          ].join('\n');
+        }
+        default: {
+          const newPadding = `${padding}  `;
 
-      if (type === 'unchanged') {
-        return getFormatedLine(name, value, '  ', padding);
+          return [
+            `${newPadding}${name}: {`,
+            `${getFormatedLines(children, `${newPadding}  `)}`,
+            `${newPadding}}`,
+          ].join('\n');
+        }
       }
-
-      if (type === 'removed') {
-        return getFormatedLine(name, value, '- ', padding);
-      }
-
-      if (type === 'added') {
-        return getFormatedLine(name, value, '+ ', padding);
-      }
-
-      if (type === 'changed') {
-        const changedLines = [
-          `${getFormatedLine(name, valueBefore, '- ', padding)}`,
-          `${getFormatedLine(name, valueAfter, '+ ', padding)}`,
-        ];
-
-        return changedLines.join('\n');
-      }
-
-      const nextPadding = placeholder.repeat(depth * 2);
-
-      const childrenLines = [
-        `${nextPadding}${name}: {`,
-        `${getFormatedLines(children, depth + 1)}`,
-        `${nextPadding}}`,
-      ];
-
-      return childrenLines.join('\n');
     });
 
     return formatedLines.join('\n');
   };
 
-  const stylishFormatedDiff = `{\n${getFormatedLines(diffTree, 1)}\n}`;
-
-  return stylishFormatedDiff;
+  return `{\n${getFormatedLines(diffTree, '  ')}\n}`;
 };
 
 export default getStylishFormatedDiff;

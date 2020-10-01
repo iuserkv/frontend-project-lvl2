@@ -18,23 +18,18 @@ const getPlainFormatedDiff = (diffTree) => {
 
       const fullName = `${ancestors}${name}`;
 
-      if (type === 'removed') {
-        return `Property '${fullName}' was deleted`;
+      switch (type) {
+        case 'unchanged':
+          return null;
+        case 'removed':
+          return `Property '${fullName}' was deleted`;
+        case 'added':
+          return `Property '${fullName}' was added with value: ${getValue(value)}`;
+        case 'changed':
+          return `Property '${fullName}' was changed from ${getValue(valueBefore)} to ${getValue(valueAfter)}`;
+        default:
+          return getFormatedLines(children, fullName);
       }
-
-      if (type === 'added') {
-        return `Property '${fullName}' was added with value: ${getValue(value)}`;
-      }
-
-      if (type === 'unchanged') {
-        return '';
-      }
-
-      if (type === 'changed') {
-        return `Property '${fullName}' was changed from ${getValue(valueBefore)} to ${getValue(valueAfter)}`;
-      }
-
-      return getFormatedLines(children, fullName);
     });
 
     return formatedLines;
@@ -42,7 +37,7 @@ const getPlainFormatedDiff = (diffTree) => {
 
   const plainFormatedDiff = getFormatedLines(diffTree, '')
     .flat(Infinity)
-    .filter((line) => line !== '')
+    .filter((line) => line !== null)
     .join('\n');
 
   return plainFormatedDiff;
