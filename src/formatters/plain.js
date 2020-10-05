@@ -27,8 +27,10 @@ const getPlainFormatedDiff = (diffTree) => {
           return `Property '${fullName}' was added with value: ${getValue(value)}`;
         case 'changed':
           return `Property '${fullName}' was changed from ${getValue(valueBefore)} to ${getValue(valueAfter)}`;
-        default:
+        case undefined:
           return getFormatedLines(children, fullName);
+        default:
+          return null;
       }
     });
 

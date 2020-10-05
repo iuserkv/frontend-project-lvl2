@@ -11,7 +11,7 @@ const getFormatedLine = (name, value, prefix, padding) => {
   return [
     `${padding}${prefix}${name}: {`,
     node.map((child) => {
-      const [childName, childValue] = [...child];
+      const [childName, childValue] = child;
       return getFormatedLine(childName, childValue, '  ', `${newPadding}  `);
     }).join('\n'),
     `${padding}  }`,
@@ -19,8 +19,10 @@ const getFormatedLine = (name, value, prefix, padding) => {
 };
 
 const getStylishFormatedDiff = (diffTree) => {
-  const getFormatedLines = (tree, padding) => {
+  const getFormatedLines = (tree, depth) => {
     const formatedLines = tree.map((node) => {
+      const placeholder = '  ';
+
       const {
         name,
         value,
@@ -29,6 +31,8 @@ const getStylishFormatedDiff = (diffTree) => {
         type,
         children,
       } = { ...node };
+
+      const padding = placeholder.repeat(depth * 2 - 1);
 
       switch (type) {
         case 'unchanged':
@@ -43,22 +47,29 @@ const getStylishFormatedDiff = (diffTree) => {
             `${getFormatedLine(name, valueAfter, '+ ', padding)}`,
           ].join('\n');
         }
-        default: {
+        case undefined: {
           const newPadding = `${padding}  `;
 
           return [
             `${newPadding}${name}: {`,
-            `${getFormatedLines(children, `${newPadding}  `)}`,
+            `${getFormatedLines(children, depth + 1)}`,
             `${newPadding}}`,
           ].join('\n');
+        }
+        default: {
+          return null;
         }
       }
     });
 
-    return formatedLines.join('\n');
+    return formatedLines
+      .filter((line) => line !== null)
+      .join('\n');
   };
 
-  return `{\n${getFormatedLines(diffTree, '  ')}\n}`;
+  const stylishFormatedDiff = `{\n${getFormatedLines(diffTree, 1)}\n}`;
+
+  return stylishFormatedDiff;
 };
 
 export default getStylishFormatedDiff;
