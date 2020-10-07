@@ -55,6 +55,7 @@ const getDiffTree = (treeBefore, treeAfter) => {
     const newNode = {
       name: key,
       children: getDiffTree(valueBefore, valueAfter),
+      type: 'complexChanges',
     };
 
     return newNode;

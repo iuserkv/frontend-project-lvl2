@@ -33,7 +33,8 @@
             "value": "vops",
             "type": "added"
           }
-        ]
+        ],
+        "type": "complexChanges"
       },
       {
         "name": "follow",
@@ -52,7 +53,8 @@
         },
         "type": "added"
       }
-    ]
+    ],
+    "type": "complexChanges"
   },
   {
     "name": "group1",
@@ -76,7 +78,8 @@
         "valueAfter": "str",
         "type": "changed"
       }
-    ]
+    ],
+    "type": "complexChanges"
   },
   {
     "name": "group2",

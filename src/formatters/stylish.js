@@ -47,7 +47,7 @@ const getStylishFormatedDiff = (diffTree) => {
             `${getFormatedLine(name, valueAfter, '+ ', padding)}`,
           ].join('\n');
         }
-        case undefined: {
+        case 'complexChanges': {
           const newPadding = `${padding}  `;
 
           return [
@@ -57,14 +57,12 @@ const getStylishFormatedDiff = (diffTree) => {
           ].join('\n');
         }
         default: {
-          return null;
+          throw new Error(`Unknown node type: '${type}'!`);
         }
       }
     });
 
-    return formatedLines
-      .filter((line) => line !== null)
-      .join('\n');
+    return formatedLines.join('\n');
   };
 
   const stylishFormatedDiff = `{\n${getFormatedLines(diffTree, 1)}\n}`;
